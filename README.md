@@ -4,11 +4,20 @@ This is a very simple python project that generate a strong and secure password 
 
 ## Installation
 
-Download the `main.py` file, rename it to `genpwd` (without file extension) and add it to your PATH.
-Make sure to give executable permission to the file before adding to PATH.
+### Using pip
+
+```sh
+pip install "git+https://github.com/nureon22/genpwd.git"
+```
+
+### Using pipx
+
+```sh
+pipx install "git+https://github.com/nureon22/genpwd.git"
+```
 
 ## Usages
 
-```
-genpwd <integer>
+```sh
+genpwd [--color] [--help]
 ```
