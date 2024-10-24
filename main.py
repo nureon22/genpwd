@@ -10,6 +10,17 @@ def random_int(length: int):
 
 
 def main():
+    if "--help" in sys.argv:
+        print(
+            """Usage: genpwd [--color] [--help]
+            \rGenerate very strong passwords.
+            \r--color: print password in colors
+            \r--help : print this message and exit"""
+        )
+        return
+
+    is_colored = "--color" in sys.argv
+
     all_chars = {
         "upper": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
         "lower": "abcdefghijklmnopqrstuvwxyz",
@@ -37,7 +48,11 @@ def main():
                     break
                 else:
                     lastchar_category = category
-                    result.append("\033[{}m{}\033[00m".format(color, char))
+
+                    if is_colored:
+                        result.append("\033[{}m{}\033[00m".format(color, char))
+                    else:
+                        result.append(char)
 
                     # Remove randomly picked character from chars_list
                     # to prevent duplicate characters in final result
