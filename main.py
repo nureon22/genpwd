@@ -24,7 +24,7 @@ def genpwd(length: int, nosymbols: bool, colored: bool):
 
     chars_list = "".join(all_chars.values())
 
-    length = min(max(8, length), 512)
+    length = min(max(8, length), 60)
     result = []
 
     lastchar_category = None
@@ -65,7 +65,7 @@ def main():
     )
     arg_parser.add_argument("-c", "--color", action="store_true", help="print password in colors")
     arg_parser.add_argument("-S", "--nosymbols", action="store_true", help="exclude special symbol characters")
-    arg_parser.add_argument("-l", "--length", action="store", type=int, default=32, help="password length (from 8 to 512)")
+    arg_parser.add_argument("-l", "--length", action="store", type=int, default=32, help="password length (from 8 to 60)")
     args = arg_parser.parse_args()
 
     genpwd(length=args.length, colored=args.color, nosymbols=args.nosymbols)
