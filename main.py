@@ -5,6 +5,9 @@ from math import floor
 from random import random
 
 
+VERSION="1.0.0"
+
+
 def random_int(length: int):
     return floor(random() * length)
 
@@ -66,7 +69,11 @@ def main():
     arg_parser.add_argument("-c", "--color", action="store_true", help="print password in colors")
     arg_parser.add_argument("-S", "--nosymbols", action="store_true", help="exclude special symbol characters")
     arg_parser.add_argument("-l", "--length", action="store", type=int, default=32, help="password length (from 8 to 60)")
+    arg_parser.add_argument("-v", "--version", action="store_true", help="print version number and exit")
     args = arg_parser.parse_args()
+
+    if args.version:
+        return print(VERSION)
 
     genpwd(length=args.length, colored=args.color, nosymbols=args.nosymbols)
 
