@@ -1,6 +1,6 @@
 #!/bin/env python3
 
-import sys
+import sys, argparse
 from math import floor
 from random import random
 
@@ -9,27 +9,22 @@ def random_int(length: int):
     return floor(random() * length)
 
 
-def main():
-    if "--help" in sys.argv:
-        print(
-            """Usage: genpwd [--color] [--help]
-            \rGenerate very strong passwords.
-            \r--color: print password in colors
-            \r--help : print this message and exit"""
-        )
-        return
-
-    is_colored = "--color" in sys.argv
-
+def genpwd(length: int, nosymbols: bool, colored: bool):
     all_chars = {
         "upper": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
         "lower": "abcdefghijklmnopqrstuvwxyz",
         "number": "0123456789",
         "symbol": "~`!@#$%^&*_-+=:;<>,.?/(){}[]"
     }
+    colors = [["upper", 93], ["lower", 92], ["number", 94], ["symbol", 95]]
+
+    if nosymbols:
+        del all_chars["symbol"]
+        colors.pop()
+
     chars_list = "".join(all_chars.values())
 
-    length = 32
+    length = min(max(8, length), 512)
     result = []
 
     lastchar_category = None
@@ -37,7 +32,7 @@ def main():
     while length:
         char = chars_list[random_int(len(chars_list))]
 
-        for [category, color] in [["upper", 93], ["lower", 92], ["number", 94], ["symbol", 95]]:
+        for [category, color] in colors:
 
             # Find out the category of randomly picked character
             if char in all_chars[category]:
@@ -49,7 +44,7 @@ def main():
                 else:
                     lastchar_category = category
 
-                    if is_colored:
+                    if colored:
                         result.append("\033[{}m{}\033[00m".format(color, char))
                     else:
                         result.append(char)
@@ -61,6 +56,19 @@ def main():
         length = length - 1
 
     print("".join(result))
+
+
+def main():
+    arg_parser = argparse.ArgumentParser(
+            prog="genpwd",
+            description="Generate very strong passwords"
+    )
+    arg_parser.add_argument("-c", "--color", action="store_true", help="print password in colors")
+    arg_parser.add_argument("-S", "--nosymbols", action="store_true", help="exclude special symbol characters")
+    arg_parser.add_argument("-l", "--length", action="store", type=int, default=32, help="password length (from 8 to 512)")
+    args = arg_parser.parse_args()
+
+    genpwd(length=args.length, colored=args.color, nosymbols=args.nosymbols)
 
 
 if __name__ == "__main__":
