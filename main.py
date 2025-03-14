@@ -66,7 +66,7 @@ def main():
             prog="genpwd",
             description="Generate very strong passwords"
     )
-    arg_parser.add_argument("-c", "--color", action="store_true", help="print password in colors")
+    arg_parser.add_argument("-C", "--nocolor", action="store_true", help="print passwords in no color")
     arg_parser.add_argument("-S", "--nosymbols", action="store_true", help="exclude special symbol characters")
     arg_parser.add_argument("-l", "--length", action="store", type=int, default=32, help="password length (from 8 to 60)")
     arg_parser.add_argument("-n", "--count", action="store", type=int, default=1, help="numbers of passwords to generate (from 1 to 20)")
@@ -78,9 +78,9 @@ def main():
 
     if args.count:
         for index in range(min(max(1, args.count), 20)):
-            genpwd(length=args.length, colored=args.color, nosymbols=args.nosymbols)
+            genpwd(length=args.length, colored=not args.nocolor, nosymbols=args.nosymbols)
     else:
-        genpwd(length=args.length, colored=args.color, nosymbols=args.nosymbols)
+        genpwd(length=args.length, colored=not args.nocolor, nosymbols=args.nosymbols)
 
 
 if __name__ == "__main__":
