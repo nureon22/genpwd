@@ -5,7 +5,7 @@ from math import floor
 from random import random
 
 
-VERSION="1.3.0"
+VERSION="1.3.1"
 
 
 def random_int(length: int):
