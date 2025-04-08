@@ -17,7 +17,7 @@ def genpwd(length: int, nosymbols: bool, colored: bool):
         "upper": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
         "lower": "abcdefghijklmnopqrstuvwxyz",
         "number": "0123456789",
-        "symbol": "~`!@#$%^&*_-+=:;<>,.?/(){}[]"
+        "symbol": "~`!@#$%^&*_-+=:;<>.?/(){}[]"
     }
     colors = [["upper", 93], ["lower", 92], ["number", 94], ["symbol", 95]]
 
