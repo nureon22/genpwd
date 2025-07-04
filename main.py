@@ -1,74 +1,56 @@
 #!/bin/env python3
 
-import sys, argparse
-from math import floor
-from random import random
+import argparse, secrets, math
+
+VERSION="1.4.0"
 
 
-VERSION="1.3.1"
-
-
-def random_int(length: int):
-    return floor(random() * length)
-
-
-def genpwd(length: int, nosymbols: bool, colored: bool):
-    all_chars = {
-        "upper": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-        "lower": "abcdefghijklmnopqrstuvwxyz",
-        "number": "0123456789",
-        "symbol": "~`!@#$%^&*_-+=:;<>.?/(){}[]"
+def apply_color(chars: str) -> str:
+    colors = {
+        "lower": "92",
+        "upper": "93",
+        "digit": "94",
+        "other": "95",
     }
-    colors = [["upper", 93], ["lower", 92], ["number", 94], ["symbol", 95]]
 
-    if nosymbols:
-        del all_chars["symbol"]
-        colors.pop()
-
-    chars_list = "".join(all_chars.values())
-
-    length = min(max(8, length), 60)
     result = []
 
-    lastchar_category = None
+    for char in chars:
+        if char.islower():
+            char = "\033[{}m{}\033[00m".format(colors["lower"], char)
+        elif char.isupper():
+            char = "\033[{}m{}\033[00m".format(colors["upper"], char)
+        elif char.isdigit():
+            char = "\033[{}m{}\033[00m".format(colors["digit"], char)
+        else:
+            char = "\033[{}m{}\033[00m".format(colors["other"], char)
 
-    while length:
-        char = chars_list[random_int(len(chars_list))]
+        result.append(char)
 
-        for [category, color] in colors:
-
-            # Find out the category of randomly picked character
-            if char in all_chars[category]:
-
-                # If the last character's category is same as current, regenerate
-                if lastchar_category == category:
-                    length = length + 1
-                    break
-                else:
-                    lastchar_category = category
-
-                    if colored:
-                        result.append("\033[{}m{}\033[00m".format(color, char))
-                    else:
-                        result.append(char)
-
-                    # Remove randomly picked character from chars_list
-                    # to prevent duplicate characters in final result
-                    chars_list = chars_list.replace(char, "")
-
-        length = length - 1
-
-    print("".join(result))
+    return "".join(result)
 
 
-def main():
-    arg_parser = argparse.ArgumentParser(
-            prog="genpwd",
-            description="Generate very strong passwords"
-    )
+def genpwd(length: int = 32, nosymbols: bool = False, nocolor: bool = False) -> str:
+    chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+    if not nosymbols:
+        # No quote ["'`] characters
+        chars = chars + "!#$%&()*+,-.:;<=>?@^_/\\|[]{}~"
+
+    length = min(max(16, length), 128)
+    result = "".join([secrets.choice(chars) for _ in range(length)])
+
+    if nocolor:
+        return result
+    else:
+        return apply_color(result)
+
+
+def main() -> None:
+    arg_parser = argparse.ArgumentParser(prog="genpwd", description="Generate very strong passwords")
     arg_parser.add_argument("-C", "--nocolor", action="store_true", help="print passwords in no color")
     arg_parser.add_argument("-S", "--nosymbols", action="store_true", help="exclude special symbol characters")
-    arg_parser.add_argument("-l", "--length", action="store", type=int, default=32, help="password length (from 8 to 60)")
+    arg_parser.add_argument("-l", "--length", action="store", type=int, default=32, help="password length (from 16 to 128)")
     arg_parser.add_argument("-n", "--count", action="store", type=int, default=1, help="numbers of passwords to generate (from 1 to 20)")
     arg_parser.add_argument("-v", "--version", action="store_true", help="print version number and exit")
     args = arg_parser.parse_args()
@@ -76,11 +58,10 @@ def main():
     if args.version:
         return print(VERSION)
 
-    if args.count:
-        for index in range(min(max(1, args.count), 20)):
-            genpwd(length=args.length, colored=not args.nocolor, nosymbols=args.nosymbols)
-    else:
-        genpwd(length=args.length, colored=not args.nocolor, nosymbols=args.nosymbols)
+    count = min(max(1, args.count), 20)
+
+    for _ in range(count):
+        print(genpwd(args.length, args.nosymbols, args.nocolor))
 
 
 if __name__ == "__main__":
