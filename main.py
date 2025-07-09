@@ -2,7 +2,7 @@
 
 import argparse, secrets, math
 
-VERSION="1.4.0"
+VERSION = "1.4.0"
 
 
 def apply_color(chars: str) -> str:
@@ -30,6 +30,23 @@ def apply_color(chars: str) -> str:
     return "".join(result)
 
 
+# Check if generated password contains characters from every group
+def is_strong(result: str, nosymbols: bool) -> bool:
+    sets: list[int] = [0, 0, 0, 1 if nosymbols else 0]
+
+    for char in result:
+        if char.islower():
+            sets[0] = 1
+        elif char.isupper():
+            sets[1] = 1
+        elif char.isdigit():
+            sets[2] = 1
+        else:
+            sets[3] = 1
+
+    return sets == [1, 1, 1, 1]
+
+
 def genpwd(length: int = 32, nosymbols: bool = False, nocolor: bool = False) -> str:
     chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
@@ -38,7 +55,12 @@ def genpwd(length: int = 32, nosymbols: bool = False, nocolor: bool = False) -> 
         chars = chars + "!#$%&()*+,-.:;<=>?@^_/\\|[]{}~"
 
     length = min(max(16, length), 128)
-    result = "".join([secrets.choice(chars) for _ in range(length)])
+
+    while True:
+        result = "".join([secrets.choice(chars) for _ in range(length)])
+
+        if is_strong(result, nosymbols):
+            break
 
     if nocolor:
         return result
