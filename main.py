@@ -1,6 +1,6 @@
 #!/bin/env python3
 
-import argparse, secrets, math
+import argparse, secrets
 
 VERSION = "1.5.0"
 
