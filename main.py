@@ -69,12 +69,37 @@ def genpwd(length: int = 32, nosymbols: bool = False, nocolor: bool = False) -> 
 
 
 def main() -> None:
-    arg_parser = argparse.ArgumentParser(prog="genpwd", description="Generate very strong passwords")
-    arg_parser.add_argument("-C", "--nocolor", action="store_true", help="print passwords in no color")
-    arg_parser.add_argument("-S", "--nosymbols", action="store_true", help="exclude special symbol characters")
-    arg_parser.add_argument("-l", "--length", action="store", type=int, default=32, help="password length (from 16 to 128)")
-    arg_parser.add_argument("-n", "--count", action="store", type=int, default=1, help="numbers of passwords to generate (from 1 to 20)")
-    arg_parser.add_argument("-v", "--version", action="store_true", help="print version number and exit")
+    arg_parser = argparse.ArgumentParser(
+        prog="genpwd", description="Generate very strong passwords"
+    )
+    arg_parser.add_argument(
+        "-C", "--nocolor", action="store_true", help="print passwords in no color"
+    )
+    arg_parser.add_argument(
+        "-S",
+        "--nosymbols",
+        action="store_true",
+        help="exclude special symbol characters",
+    )
+    arg_parser.add_argument(
+        "-l",
+        "--length",
+        action="store",
+        type=int,
+        default=32,
+        help="password length (from 16 to 128)",
+    )
+    arg_parser.add_argument(
+        "-n",
+        "--count",
+        action="store",
+        type=int,
+        default=1,
+        help="numbers of passwords to generate (from 1 to 20)",
+    )
+    arg_parser.add_argument(
+        "-v", "--version", action="store_true", help="print version number and exit"
+    )
     args = arg_parser.parse_args()
 
     if args.version:
