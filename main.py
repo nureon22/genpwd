@@ -4,13 +4,20 @@ import argparse, secrets
 
 VERSION = "1.5.0"
 
+CHARACTERS = {
+    "lower": "abcdefghijklmnopqrstuvwxyz",
+    "upper": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    "digit": "0123456789",
+    "symbol": "!#$%&()*+,-.:;<=>?@^_/|[]{}~",  # Excluded "'`\
+}
+
 
 def apply_color(chars: str) -> str:
     colors = {
         "lower": "92",
         "upper": "93",
         "digit": "94",
-        "other": "95",
+        "symbol": "95",
     }
 
     result = []
@@ -23,7 +30,7 @@ def apply_color(chars: str) -> str:
         elif char.isdigit():
             char = "\033[{}m{}\033[00m".format(colors["digit"], char)
         else:
-            char = "\033[{}m{}\033[00m".format(colors["other"], char)
+            char = "\033[{}m{}\033[00m".format(colors["symbol"], char)
 
         result.append(char)
 
@@ -31,35 +38,46 @@ def apply_color(chars: str) -> str:
 
 
 # Check if generated password contains characters from every group
-def is_strong(result: str, nosymbols: bool) -> bool:
-    sets: list[int] = [0, 0, 0, 1 if nosymbols else 0]
+def is_strong(result: str, nosymbols: bool, length: int, atleast: int) -> bool:
+    included_chars = {
+        "lower": 0,
+        "upper": 0,
+        "digit": 0,
+        "symbol": atleast if nosymbols else 0,
+    }
+
+    if len(result) < length:
+        return False
 
     for char in result:
         if char.islower():
-            sets[0] = 1
+            included_chars["lower"] = included_chars["lower"] + 1
         elif char.isupper():
-            sets[1] = 1
+            included_chars["upper"] = included_chars["upper"] + 1
         elif char.isdigit():
-            sets[2] = 1
+            included_chars["digit"] = included_chars["digit"] + 1
         else:
-            sets[3] = 1
+            included_chars["symbol"] = included_chars["symbol"] + 1
 
-    return sets == [1, 1, 1, 1]
+    for key in included_chars:
+        if included_chars[key] < atleast:
+            return False
+
+    return True
 
 
 def genpwd(length: int = 32, nosymbols: bool = False, nocolor: bool = False) -> str:
-    chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    chars = CHARACTERS["lower"] + CHARACTERS["upper"] + CHARACTERS["digit"]
 
     if not nosymbols:
-        # No quote ["'`] characters
-        chars = chars + "!#$%&()*+,-.:;<=>?@^_/\\|[]{}~"
+        chars = chars + CHARACTERS["symbol"]
 
     length = min(max(16, length), 128)
 
     while True:
         result = "".join([secrets.choice(chars) for _ in range(length)])
 
-        if is_strong(result, nosymbols):
+        if is_strong(result, nosymbols, length, 1):
             break
 
     if nocolor:
@@ -105,9 +123,7 @@ def main() -> None:
     if args.version:
         return print(VERSION)
 
-    count = min(max(1, args.count), 20)
-
-    for _ in range(count):
+    for _ in range(min(max(1, args.count), 20)):
         print(genpwd(args.length, args.nosymbols, args.nocolor))
 
 
