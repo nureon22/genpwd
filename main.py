@@ -2,7 +2,7 @@
 
 import argparse, secrets, sys
 
-VERSION = "1.6.0"
+VERSION = "1.6.1"
 
 CHARACTERS = {
     "lower": "abcdefghijklmnopqrstuvwxyz",
