@@ -9,6 +9,9 @@ CHARACTERS = {
     "upper": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
     "digit": "0123456789",
     "symbol": "!#$%&()*+,-.:;<=>?@^_/|[]{}~",  # Excluded "'`\
+    "extended": "".join(
+        [chr(cp) for cp in range(0xC0, 0xFF + 1)]
+    ),  # Latin-1 Supplement
 }
 
 
@@ -18,6 +21,7 @@ def apply_color(chars: str) -> str:
         "upper": "93",
         "digit": "94",
         "symbol": "95",
+        "extended": "91",
     }
 
     result: list[str] = []
@@ -31,6 +35,8 @@ def apply_color(chars: str) -> str:
             char = "\033[{}m{}\033[00m".format(colors["digit"], char)
         elif char in CHARACTERS["symbol"]:
             char = "\033[{}m{}\033[00m".format(colors["symbol"], char)
+        elif char in CHARACTERS["extended"]:
+            char = "\033[{}m{}\033[00m".format(colors["extended"], char)
 
         result.append(char)
 
@@ -38,12 +44,15 @@ def apply_color(chars: str) -> str:
 
 
 # Check if generated password contains characters from every group
-def is_strong(result: str, nosymbols: bool, length: int, atleast: int) -> bool:
+def is_strong(
+    result: str, nosymbols: bool, extended: bool, length: int, atleast: int
+) -> bool:
     included_chars = {
         "lower": 0,
         "upper": 0,
         "digit": 0,
         "symbol": 0,
+        "extended": 0,
     }
 
     if len(result) < length:
@@ -72,21 +81,28 @@ def is_strong(result: str, nosymbols: bool, length: int, atleast: int) -> bool:
         if included_chars["symbol"] < atleast:
             return False
 
+    if extended:
+        if included_chars["extended"] < atleast:
+            return False
+
     return True
 
 
-def genpwd(length: int = 32, nosymbols: bool = False, nocolor: bool = False) -> str:
+def genpwd(length: int = 32, nosymbols: bool = False, extended: bool = False, nocolor: bool = False) -> str:
     chars = CHARACTERS["lower"] + CHARACTERS["upper"] + CHARACTERS["digit"]
 
     if not nosymbols:
         chars = chars + CHARACTERS["symbol"]
+
+    if extended:
+        chars = chars + CHARACTERS["extended"]
 
     length = min(max(16, length), 128)
 
     while True:
         result = "".join([secrets.choice(chars) for _ in range(length)])
 
-        if is_strong(result, nosymbols, length, 1):
+        if is_strong(result, nosymbols, extended, length, 1):
             break
 
     if nocolor:
@@ -107,6 +123,12 @@ def main() -> None:
         "--nosymbols",
         action="store_true",
         help="exclude special symbol characters",
+    )
+    arg_parser.add_argument(
+        "-e",
+        "--extended",
+        action="store_true",
+        help="include special latin-1 supplement characters",
     )
     arg_parser.add_argument(
         "-l",
@@ -133,7 +155,7 @@ def main() -> None:
         return print(VERSION)
 
     for _ in range(min(max(1, args.count), 20)):
-        print(genpwd(args.length, args.nosymbols, args.nocolor))
+        print(genpwd(args.length, args.nosymbols, args.extended, args.nocolor))
 
 
 if __name__ == "__main__":
