@@ -20,16 +20,16 @@ def apply_color(chars: str) -> str:
         "symbol": "95",
     }
 
-    result = []
+    result: list[str] = []
 
     for char in chars:
-        if char.islower():
+        if char in CHARACTERS["lower"]:
             char = "\033[{}m{}\033[00m".format(colors["lower"], char)
-        elif char.isupper():
+        elif char in CHARACTERS["upper"]:
             char = "\033[{}m{}\033[00m".format(colors["upper"], char)
-        elif char.isdigit():
+        elif char in CHARACTERS["digit"]:
             char = "\033[{}m{}\033[00m".format(colors["digit"], char)
-        else:
+        elif char in CHARACTERS["symbol"]:
             char = "\033[{}m{}\033[00m".format(colors["symbol"], char)
 
         result.append(char)
@@ -43,24 +43,33 @@ def is_strong(result: str, nosymbols: bool, length: int, atleast: int) -> bool:
         "lower": 0,
         "upper": 0,
         "digit": 0,
-        "symbol": atleast if nosymbols else 0,
+        "symbol": 0,
     }
 
     if len(result) < length:
         return False
 
     for char in result:
-        if char.islower():
+        if char in CHARACTERS["lower"]:
             included_chars["lower"] = included_chars["lower"] + 1
-        elif char.isupper():
+        elif char in CHARACTERS["upper"]:
             included_chars["upper"] = included_chars["upper"] + 1
-        elif char.isdigit():
+        elif char in CHARACTERS["digit"]:
             included_chars["digit"] = included_chars["digit"] + 1
-        else:
+        elif char in CHARACTERS["symbol"]:
             included_chars["symbol"] = included_chars["symbol"] + 1
+        elif char in CHARACTERS["extended"]:
+            included_chars["extended"] = included_chars["extended"] + 1
 
-    for key in included_chars:
-        if included_chars[key] < atleast:
+    if included_chars["lower"] < atleast:
+        return False
+    if included_chars["upper"] < atleast:
+        return False
+    if included_chars["digit"] < atleast:
+        return False
+
+    if not nosymbols:
+        if included_chars["symbol"] < atleast:
             return False
 
     return True
