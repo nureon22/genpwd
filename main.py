@@ -1,6 +1,6 @@
 #!/bin/env python3
 
-import argparse, secrets
+import argparse, secrets, sys
 
 VERSION = "1.6.0"
 
@@ -13,7 +13,6 @@ CHARACTERS = {
         [chr(cp) for cp in range(0xC0, 0xFF + 1)]
     ),  # Latin-1 Supplement
 }
-
 
 def apply_color(chars: str) -> str:
     colors = {
@@ -105,10 +104,10 @@ def genpwd(length: int = 32, nosymbols: bool = False, extended: bool = False, no
         if is_strong(result, nosymbols, extended, length, 1):
             break
 
-    if nocolor:
-        return result
-    else:
+    if not nocolor and sys.stdout.isatty():
         return apply_color(result)
+    else:
+        return result
 
 
 def main() -> None:
