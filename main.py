@@ -1,6 +1,6 @@
 #!/bin/env python3
 
-import argparse, secrets, sys
+import argparse, json, os, secrets, sys
 
 VERSION = "1.6.1"
 
@@ -13,6 +13,7 @@ CHARACTERS = {
         [chr(cp) for cp in range(0xC0, 0xFF + 1)]
     ),  # Latin-1 Supplement
 }
+
 
 def apply_color(chars: str) -> str:
     colors = {
@@ -87,7 +88,12 @@ def is_strong(
     return True
 
 
-def genpwd(length: int = 32, nosymbols: bool = False, extended: bool = False, nocolor: bool = False) -> str:
+def genpwd(
+    length: int = 32,
+    nosymbols: bool = False,
+    extended: bool = False,
+    nocolor: bool = False,
+) -> str:
     chars = CHARACTERS["lower"] + CHARACTERS["upper"] + CHARACTERS["digit"]
 
     if not nosymbols:
@@ -110,9 +116,30 @@ def genpwd(length: int = 32, nosymbols: bool = False, extended: bool = False, no
         return result
 
 
+def genpwd_passphrase(length: int = 32, nocolor: bool = False) -> str:
+    words: list[str] = []
+
+    with open(os.path.join(os.path.dirname(__file__), "wordlist/words.json"), "r") as f:
+        words = json.loads(f.read())
+        f.close()
+
+    length = min(max(16, length), 128)
+    result = [secrets.choice(words) for _ in range(length)]
+
+    if not nocolor and sys.stdout.isatty():
+        return apply_color("-".join(result))
+    else:
+        return "-".join(result)
+
+
 def main() -> None:
     arg_parser = argparse.ArgumentParser(
         prog="genpwd", description="Generate very strong passwords"
+    )
+    arg_parser.add_argument(
+        "--passphrase",
+        action="store_true",
+        help="Generate passphrase instead of password",
     )
     arg_parser.add_argument(
         "-C", "--nocolor", action="store_true", help="print passwords in no color"
@@ -153,8 +180,14 @@ def main() -> None:
     if args.version:
         return print(VERSION)
 
-    for _ in range(min(max(1, args.count), 20)):
-        print(genpwd(args.length, args.nosymbols, args.extended, args.nocolor))
+    count = min(max(1, args.count), 20)
+
+    if args.passphrase:
+        for _ in range(count):
+            print(genpwd_passphrase(args.length, args.nocolor))
+    else:
+        for _ in range(count):
+            print(genpwd(args.length, args.nosymbols, args.extended, args.nocolor))
 
 
 if __name__ == "__main__":
