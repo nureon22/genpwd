@@ -1,6 +1,6 @@
 import sys
 
-VERSION = "1.9.0"
+VERSION = "1.9.1"
 
 DEFAULT_LENGTH = 32
 MIN_LENGTH = 16
