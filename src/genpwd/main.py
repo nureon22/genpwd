@@ -113,7 +113,7 @@ def genpwd_passphrase(length: int = DEFAULT_LENGTH, nocolor: bool = False) -> st
     result = [secrets.choice(words) for _ in range(length)]
 
     if not nocolor and sys.stdout.isatty():
-        return apply_color("-".join(result))
+        return "\033[02m-\033[00m".join(["\033[32m{}\033[00m".format(word) for word in result])
     else:
         return "-".join(result)
 
