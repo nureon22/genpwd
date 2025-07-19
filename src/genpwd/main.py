@@ -1,8 +1,8 @@
 #!/bin/env python3
 
-import argparse, secrets, sys
+import argparse, secrets
 from .constants import (
-    CHARACTERS, COLORS_MAP, VERSION,
+    CHARACTERS, COLORS_MAP, IS_ATTY, VERSION,
     DEFAULT_LENGTH, MIN_LENGTH, MAX_LENGTH, DEFAULT_WORDS, MIN_WORDS, MAX_WORDS
 )
 from .words import WORDS
@@ -34,7 +34,7 @@ def genpwd(
         if all(any(char in CHARACTERS[group] for char in result) for group in groups):
             break
 
-    if not nocolor and sys.stdout.isatty():
+    if not nocolor and IS_ATTY:
         return apply_color(result)
     else:
         return result
@@ -46,7 +46,7 @@ def genpwd_passphrase(length: int = DEFAULT_WORDS, nocolor: bool = False) -> str
     length = min(max(MIN_WORDS, length), MAX_WORDS)
     result = [secrets.choice(words) for _ in range(length)]
 
-    if not nocolor and sys.stdout.isatty():
+    if not nocolor and IS_ATTY:
         return "\033[02m-\033[00m".join("\033[32m{}\033[00m".format(word) for word in result)
     else:
         return "-".join(result)
@@ -112,10 +112,10 @@ def main() -> None:
 
     if args.passphrase:
         for _ in range(count):
-            print(genpwd_passphrase(args.words, args.nocolor))
+            print(genpwd_passphrase(args.words, args.nocolor), end=("\n" if IS_ATTY else ""))
     else:
         for _ in range(count):
-            print(genpwd(args.length, args.nosymbols, args.extended, args.nocolor))
+            print(genpwd(args.length, args.nosymbols, args.extended, args.nocolor), end=("\n" if IS_ATTY else ""))
 
 
 if __name__ == "__main__":

@@ -1,3 +1,5 @@
+import sys
+
 VERSION = "1.9.0"
 
 DEFAULT_LENGTH = 32
@@ -25,3 +27,5 @@ for char in CHARACTERS["upper"]: COLORS_MAP[char] = "93"
 for char in CHARACTERS["digit"]: COLORS_MAP[char] = "94"
 for char in CHARACTERS["symbol"]: COLORS_MAP[char] = "95"
 for char in CHARACTERS["extended"]: COLORS_MAP[char] = "91"
+
+IS_ATTY = sys.stdout.isatty()
