@@ -4,6 +4,10 @@ DEFAULT_LENGTH = 32
 MIN_LENGTH = 16
 MAX_LENGTH = 128
 
+DEFAULT_WORDS = 8
+MIN_WORDS = 4
+MAX_WORDS = 128
+
 CHARACTERS = {
     "lower": "abcdefghijklmnopqrstuvwxyz",
     "upper": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",

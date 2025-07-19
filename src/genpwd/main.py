@@ -1,7 +1,7 @@
 #!/bin/env python3
 
 import argparse, secrets, sys
-from .constants import CHARACTERS, VERSION, DEFAULT_LENGTH, MIN_LENGTH, MAX_LENGTH
+from .constants import (CHARACTERS, VERSION, DEFAULT_LENGTH, MIN_LENGTH, MAX_LENGTH, DEFAULT_WORDS, MIN_WORDS, MAX_WORDS)
 from .words import WORDS
 
 
@@ -61,10 +61,10 @@ def genpwd(
         return result
 
 
-def genpwd_passphrase(length: int = DEFAULT_LENGTH, nocolor: bool = False) -> str:
+def genpwd_passphrase(length: int = DEFAULT_WORDS, nocolor: bool = False) -> str:
     words: list[str] = WORDS
 
-    length = min(max(MIN_LENGTH, length), MAX_LENGTH)
+    length = min(max(MIN_WORDS, length), MAX_WORDS)
     result = [secrets.choice(words) for _ in range(length)]
 
     if not nocolor and sys.stdout.isatty():
@@ -106,6 +106,14 @@ def main() -> None:
         help="password length (from {} to {})".format(MIN_LENGTH, MAX_LENGTH),
     )
     arg_parser.add_argument(
+        "-w",
+        "--words",
+        action="store",
+        type=int,
+        default=DEFAULT_WORDS,
+        help="Number of words for passphrase (from {} to {})".format(MIN_WORDS, MAX_WORDS),
+    )
+    arg_parser.add_argument(
         "-n",
         "--count",
         action="store",
@@ -125,7 +133,7 @@ def main() -> None:
 
     if args.passphrase:
         for _ in range(count):
-            print(genpwd_passphrase(args.length, args.nocolor))
+            print(genpwd_passphrase(args.words, args.nocolor))
     else:
         for _ in range(count):
             print(genpwd(args.length, args.nosymbols, args.extended, args.nocolor))
