@@ -24,7 +24,6 @@ classifiers = [
     "Topic :: Security",
     "Topic :: Terminals",
     "Topic :: Utilities",
-
 ]
 
 [project.urls]
@@ -33,4 +32,4 @@ Repository = "https://github.com/nureon22/genpwd.git"
 Issues = "https://github.com/nureon22/genpwd/issues"
 
 [project.scripts]
-genpwd = "main:main"
+genpwd = "genpwd.main:main"
