@@ -33,71 +33,26 @@ def apply_color(chars: str) -> str:
     return "".join(result)
 
 
-# Check if generated password contains characters from every group
-def is_strong(
-    result: str, nosymbols: bool, extended: bool, length: int, atleast: int
-) -> bool:
-    included_chars = {
-        "lower": 0,
-        "upper": 0,
-        "digit": 0,
-        "symbol": 0,
-        "extended": 0,
-    }
-
-    if len(result) < length:
-        return False
-
-    for char in result:
-        if char in CHARACTERS["lower"]:
-            included_chars["lower"] = included_chars["lower"] + 1
-        elif char in CHARACTERS["upper"]:
-            included_chars["upper"] = included_chars["upper"] + 1
-        elif char in CHARACTERS["digit"]:
-            included_chars["digit"] = included_chars["digit"] + 1
-        elif char in CHARACTERS["symbol"]:
-            included_chars["symbol"] = included_chars["symbol"] + 1
-        elif char in CHARACTERS["extended"]:
-            included_chars["extended"] = included_chars["extended"] + 1
-
-    if included_chars["lower"] < atleast:
-        return False
-    if included_chars["upper"] < atleast:
-        return False
-    if included_chars["digit"] < atleast:
-        return False
-
-    if not nosymbols:
-        if included_chars["symbol"] < atleast:
-            return False
-
-    if extended:
-        if included_chars["extended"] < atleast:
-            return False
-
-    return True
-
-
 def genpwd(
     length: int = DEFAULT_LENGTH,
     nosymbols: bool = False,
     extended: bool = False,
     nocolor: bool = False,
 ) -> str:
-    chars = CHARACTERS["lower"] + CHARACTERS["upper"] + CHARACTERS["digit"]
+    groups = ["lower", "upper", "digit"]
 
-    if not nosymbols:
-        chars = chars + CHARACTERS["symbol"]
+    if not nosymbols: groups.append("symbol")
+    if extended: groups.append("extended")
 
-    if extended:
-        chars = chars + CHARACTERS["extended"]
+    chars = "".join(CHARACTERS[group] for group in groups)
 
     length = min(max(MIN_LENGTH, length), MAX_LENGTH)
 
     while True:
-        result = "".join([secrets.choice(chars) for _ in range(length)])
+        result = "".join(secrets.choice(chars) for _ in range(length))
 
-        if is_strong(result, nosymbols, extended, length, 1):
+        # Check generated password contains atleast one character from every group
+        if all(any(char in CHARACTERS[group] for char in result) for group in groups):
             break
 
     if not nocolor and sys.stdout.isatty():
@@ -113,7 +68,7 @@ def genpwd_passphrase(length: int = DEFAULT_LENGTH, nocolor: bool = False) -> st
     result = [secrets.choice(words) for _ in range(length)]
 
     if not nocolor and sys.stdout.isatty():
-        return "\033[02m-\033[00m".join(["\033[32m{}\033[00m".format(word) for word in result])
+        return "\033[02m-\033[00m".join("\033[32m{}\033[00m".format(word) for word in result)
     else:
         return "-".join(result)
 
