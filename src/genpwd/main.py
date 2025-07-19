@@ -119,7 +119,7 @@ def genpwd(
 def genpwd_passphrase(length: int = 32, nocolor: bool = False) -> str:
     words: list[str] = []
 
-    with open(os.path.join(os.path.dirname(__file__), "wordlist/words.json"), "r") as f:
+    with open(os.path.join(os.path.dirname(__file__), "../../wordlist/words.json"), "r") as f:
         words = json.loads(f.read())
         f.close()
 
