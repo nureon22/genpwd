@@ -1,19 +1,8 @@
 #!/bin/env python3
 
 import argparse, secrets, sys
+from .constants import CHARACTERS, VERSION, DEFAULT_LENGTH, MIN_LENGTH, MAX_LENGTH
 from .words import WORDS
-
-VERSION = "1.7.2"
-
-CHARACTERS = {
-    "lower": "abcdefghijklmnopqrstuvwxyz",
-    "upper": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-    "digit": "0123456789",
-    "symbol": "!#$%&()*+,-.:;<=>?@^_/|[]{}~",  # Excluded "'`\
-    "extended": "".join(
-        [chr(cp) for cp in range(0xC0, 0xFF + 1)]
-    ),  # Latin-1 Supplement
-}
 
 
 def apply_color(chars: str) -> str:
@@ -90,7 +79,7 @@ def is_strong(
 
 
 def genpwd(
-    length: int = 32,
+    length: int = DEFAULT_LENGTH,
     nosymbols: bool = False,
     extended: bool = False,
     nocolor: bool = False,
@@ -103,7 +92,7 @@ def genpwd(
     if extended:
         chars = chars + CHARACTERS["extended"]
 
-    length = min(max(16, length), 128)
+    length = min(max(MIN_LENGTH, length), MAX_LENGTH)
 
     while True:
         result = "".join([secrets.choice(chars) for _ in range(length)])
@@ -117,10 +106,10 @@ def genpwd(
         return result
 
 
-def genpwd_passphrase(length: int = 32, nocolor: bool = False) -> str:
+def genpwd_passphrase(length: int = DEFAULT_LENGTH, nocolor: bool = False) -> str:
     words: list[str] = WORDS
 
-    length = min(max(16, length), 128)
+    length = min(max(MIN_LENGTH, length), MAX_LENGTH)
     result = [secrets.choice(words) for _ in range(length)]
 
     if not nocolor and sys.stdout.isatty():
@@ -158,8 +147,8 @@ def main() -> None:
         "--length",
         action="store",
         type=int,
-        default=32,
-        help="password length (from 16 to 128)",
+        default=DEFAULT_LENGTH,
+        help="password length (from {} to {})".format(MIN_LENGTH, MAX_LENGTH),
     )
     arg_parser.add_argument(
         "-n",
