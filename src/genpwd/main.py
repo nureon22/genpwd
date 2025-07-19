@@ -2,7 +2,7 @@
 
 import argparse, json, os, secrets, sys
 
-VERSION = "1.7.1"
+VERSION = "1.7.2"
 
 CHARACTERS = {
     "lower": "abcdefghijklmnopqrstuvwxyz",
