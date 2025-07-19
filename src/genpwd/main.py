@@ -1,36 +1,15 @@
 #!/bin/env python3
 
 import argparse, secrets, sys
-from .constants import (CHARACTERS, VERSION, DEFAULT_LENGTH, MIN_LENGTH, MAX_LENGTH, DEFAULT_WORDS, MIN_WORDS, MAX_WORDS)
+from .constants import (
+    CHARACTERS, COLORS_MAP, VERSION,
+    DEFAULT_LENGTH, MIN_LENGTH, MAX_LENGTH, DEFAULT_WORDS, MIN_WORDS, MAX_WORDS
+)
 from .words import WORDS
 
 
 def apply_color(chars: str) -> str:
-    colors = {
-        "lower": "92",
-        "upper": "93",
-        "digit": "94",
-        "symbol": "95",
-        "extended": "91",
-    }
-
-    result: list[str] = []
-
-    for char in chars:
-        if char in CHARACTERS["lower"]:
-            char = "\033[{}m{}\033[00m".format(colors["lower"], char)
-        elif char in CHARACTERS["upper"]:
-            char = "\033[{}m{}\033[00m".format(colors["upper"], char)
-        elif char in CHARACTERS["digit"]:
-            char = "\033[{}m{}\033[00m".format(colors["digit"], char)
-        elif char in CHARACTERS["symbol"]:
-            char = "\033[{}m{}\033[00m".format(colors["symbol"], char)
-        elif char in CHARACTERS["extended"]:
-            char = "\033[{}m{}\033[00m".format(colors["extended"], char)
-
-        result.append(char)
-
-    return "".join(result)
+    return "".join("\033[{}m{}\033[00m".format(COLORS_MAP.get(char, "00"), char) for char in chars)
 
 
 def genpwd(
