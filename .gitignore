@@ -1,4 +1,11 @@
-build/
-dist/
-*.egg-info/
-__pycache__/
+__pycache__
+
+# Virtual environment
+bin
+lib
+lib64
+
+# Build output
+dist
+build
+*.egg-info
