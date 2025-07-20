@@ -13,7 +13,7 @@ from .constants import (
     MIN_WORDS,
     MAX_WORDS,
 )
-from .words import WORDS
+from .words import EFF_LONG_WORDS
 
 
 def apply_color(chars: str) -> str:
@@ -53,7 +53,7 @@ def genpwd(
 
 
 def genpwd_passphrase(length: int = DEFAULT_WORDS, nocolor: bool = False) -> str:
-    words: list[str] = WORDS
+    words: list[str] = EFF_LONG_WORDS
 
     length = min(max(MIN_WORDS, length), MAX_WORDS)
     result = [secrets.choice(words) for _ in range(length)]
