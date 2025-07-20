@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "genpwd"
 description = "Simple CLI program that can generate very strong passwords"
-version = "1.9.1"
+version = "1.9.2"
 readme = "README.md"
 requires-python = ">= 3.8"
 license = { file = "LICENSE" }
