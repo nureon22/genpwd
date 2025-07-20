@@ -2,14 +2,24 @@
 
 import argparse, secrets
 from .constants import (
-    CHARACTERS, COLORS_MAP, IS_ATTY, VERSION,
-    DEFAULT_LENGTH, MIN_LENGTH, MAX_LENGTH, DEFAULT_WORDS, MIN_WORDS, MAX_WORDS
+    CHARACTERS,
+    COLORS_MAP,
+    IS_ATTY,
+    VERSION,
+    DEFAULT_LENGTH,
+    MIN_LENGTH,
+    MAX_LENGTH,
+    DEFAULT_WORDS,
+    MIN_WORDS,
+    MAX_WORDS,
 )
 from .words import WORDS
 
 
 def apply_color(chars: str) -> str:
-    return "".join("\033[{}m{}\033[00m".format(COLORS_MAP.get(char, "00"), char) for char in chars)
+    return "".join(
+        "\033[{}m{}\033[00m".format(COLORS_MAP.get(char, "00"), char) for char in chars
+    )
 
 
 def genpwd(
@@ -20,8 +30,10 @@ def genpwd(
 ) -> str:
     groups = ["lower", "upper", "digit"]
 
-    if not nosymbols: groups.append("symbol")
-    if extended: groups.append("extended")
+    if not nosymbols:
+        groups.append("symbol")
+    if extended:
+        groups.append("extended")
 
     chars = "".join(CHARACTERS[group] for group in groups)
 
@@ -47,7 +59,9 @@ def genpwd_passphrase(length: int = DEFAULT_WORDS, nocolor: bool = False) -> str
     result = [secrets.choice(words) for _ in range(length)]
 
     if not nocolor and IS_ATTY:
-        return "\033[02m-\033[00m".join("\033[32m{}\033[00m".format(word) for word in result)
+        return "\033[02m-\033[00m".join(
+            "\033[32m{}\033[00m".format(word) for word in result
+        )
     else:
         return "-".join(result)
 
@@ -90,7 +104,9 @@ def main() -> None:
         action="store",
         type=int,
         default=DEFAULT_WORDS,
-        help="Number of words for passphrase (from {} to {})".format(MIN_WORDS, MAX_WORDS),
+        help="Number of words for passphrase (from {} to {})".format(
+            MIN_WORDS, MAX_WORDS
+        ),
     )
     arg_parser.add_argument(
         "-n",
@@ -112,10 +128,16 @@ def main() -> None:
 
     if args.passphrase:
         for _ in range(count):
-            print(genpwd_passphrase(args.words, args.nocolor), end=("\n" if IS_ATTY else ""))
+            print(
+                genpwd_passphrase(args.words, args.nocolor),
+                end=("\n" if IS_ATTY else ""),
+            )
     else:
         for _ in range(count):
-            print(genpwd(args.length, args.nosymbols, args.extended, args.nocolor), end=("\n" if IS_ATTY else ""))
+            print(
+                genpwd(args.length, args.nosymbols, args.extended, args.nocolor),
+                end=("\n" if IS_ATTY else ""),
+            )
 
 
 if __name__ == "__main__":
