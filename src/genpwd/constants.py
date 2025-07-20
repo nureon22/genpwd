@@ -15,9 +15,12 @@ CHARACTERS = {
     "upper": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
     "digit": "0123456789",
     "symbol": "!#$%&()*+,-.:;<=>?@^_/|[]{}~",  # Excluded "'`\
-    "extended": "".join(
-        [chr(cp) for cp in range(0xC0, 0xFF + 1)]
-    ),  # Latin-1 Supplement
+    "extended": "".join([
+        "".join([chr(cp) for cp in range(0xC0, 0xD6 + 1)]), # Latin-1 Supplement: uppercace letters
+        "".join([chr(cp) for cp in range(0xD8, 0xDE + 1)]), # Latin-1 Supplement: uppercace letters
+        "".join([chr(cp) for cp in range(0xDF, 0xF6 + 1)]), # Latin-1 Supplement: lowercase letters
+        "".join([chr(cp) for cp in range(0xF8, 0xFF + 1)]), # Latin-1 Supplement: lowercase letters
+    ]),
 }
 
 COLORS_MAP = {}
