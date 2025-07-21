@@ -19,15 +19,17 @@ pipx install "git+https://github.com/nureon22/genpwd.git"
 ## Usages
 
 ```sh
-usage: genpwd [-h] [--passphrase] [-C] [-D] [-S] [-e] [-l LENGTH] [-w WORDS]
-              [-n COUNT] [-v]
+usage: genpwd [-h] [--passphrase] [--username] [-C] [-c] [-D] [-S] [-e]
+              [-l LENGTH] [-w WORDS] [-n COUNT] [-v]
 
 Generate very strong passwords
 
 options:
   -h, --help            show this help message and exit
   --passphrase          Generate passphrase instead of password
+  --username            Generate username instead of password
   -C, --nocolor         print passwords in no color
+  -c, --capitalize      Capitalize passphrase and username
   -D, --nodigits        exclude digits
   -S, --nosymbols       exclude special symbol characters
   -e, --extended        include special latin-1 supplement characters
