@@ -24,13 +24,16 @@ def apply_color(chars: str) -> str:
 
 def genpwd(
     length: int = DEFAULT_LENGTH,
-    nosymbols: bool = False,
+    digits: bool = False,
+    symbols: bool = False,
     extended: bool = False,
     nocolor: bool = False,
 ) -> str:
-    groups = ["lower", "upper", "digit"]
+    groups = ["lower", "upper"]
 
-    if not nosymbols:
+    if digits:
+        groups.append("digit")
+    if symbols:
         groups.append("symbol")
     if extended:
         groups.append("extended")
@@ -77,6 +80,12 @@ def main() -> None:
     )
     arg_parser.add_argument(
         "-C", "--nocolor", action="store_true", help="print passwords in no color"
+    )
+    arg_parser.add_argument(
+        "-D",
+        "--nodigits",
+        action="store_true",
+        help="exclude digits",
     )
     arg_parser.add_argument(
         "-S",
@@ -135,7 +144,7 @@ def main() -> None:
     else:
         for _ in range(count):
             print(
-                genpwd(args.length, args.nosymbols, args.extended, args.nocolor),
+                genpwd(args.length, not args.nodigits, not args.nosymbols, args.extended, args.nocolor),
                 end=("\n" if IS_ATTY else ""),
             )
 
