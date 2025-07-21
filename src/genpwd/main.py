@@ -55,11 +55,15 @@ def genpwd(
         return result
 
 
-def genpwd_passphrase(length: int = DEFAULT_WORDS, nocolor: bool = False) -> str:
+def genpwd_passphrase(length: int = DEFAULT_WORDS, capitalize: bool = False, nocolor: bool = False) -> str:
     words: list[str] = EFF_LONG_WORDS
 
     length = min(max(MIN_WORDS, length), MAX_WORDS)
-    result = [secrets.choice(words) for _ in range(length)]
+
+    if capitalize:
+        result = [secrets.choice(words).capitalize() for _ in range(length)]
+    else:
+        result = [secrets.choice(words) for _ in range(length)]
 
     if not nocolor and IS_ATTY:
         return "\033[02m-\033[00m".join(result)
@@ -67,15 +71,19 @@ def genpwd_passphrase(length: int = DEFAULT_WORDS, nocolor: bool = False) -> str
         return "-".join(result)
 
 
-def genpwd_username(nocolor: bool = False) -> str:
+def genpwd_username(capitalize: bool = False, nocolor: bool = False) -> str:
     words: list[str] = EFF_LONG_WORDS
 
-    result = secrets.choice(words) + "".join(secrets.choice(CHARACTERS["digit"]) for i in range(4))
+    result = secrets.choice(words)
+    digit = "".join(secrets.choice(CHARACTERS["digit"]) for _ in range(4))
+
+    if capitalize:
+        result = result.capitalize()
 
     if not nocolor and IS_ATTY:
-        return apply_color(result)
+        return result + apply_color(digit)
     else:
-        return result
+        return result + digit
 
 
 def main() -> None:
@@ -94,6 +102,11 @@ def main() -> None:
     )
     arg_parser.add_argument(
         "-C", "--nocolor", action="store_true", help="print passwords in no color"
+    )
+    arg_parser.add_argument(
+        "-c", "--capitalize",
+        action="store_true",
+        help="Capitalize passphrase and username"
     )
     arg_parser.add_argument(
         "-D",
@@ -152,13 +165,13 @@ def main() -> None:
     if args.passphrase:
         for _ in range(count):
             print(
-                genpwd_passphrase(args.words, args.nocolor),
+                genpwd_passphrase(args.words, args.capitalize, args.nocolor),
                 end=("\n" if IS_ATTY else ""),
             )
     elif args.username:
         for _ in range(count):
             print(
-                genpwd_username(args.nocolor),
+                genpwd_username(args.capitalize, args.nocolor),
                 end=("\n" if IS_ATTY else ""),
             )
     else:
