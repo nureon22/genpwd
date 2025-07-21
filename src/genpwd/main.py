@@ -67,6 +67,17 @@ def genpwd_passphrase(length: int = DEFAULT_WORDS, nocolor: bool = False) -> str
         return "-".join(result)
 
 
+def genpwd_username(nocolor: bool = False) -> str:
+    words: list[str] = EFF_LONG_WORDS
+
+    result = secrets.choice(words) + "".join(secrets.choice(CHARACTERS["digit"]) for i in range(4))
+
+    if not nocolor and IS_ATTY:
+        return apply_color(result)
+    else:
+        return result
+
+
 def main() -> None:
     arg_parser = argparse.ArgumentParser(
         prog="genpwd", description="Generate very strong passwords"
@@ -75,6 +86,11 @@ def main() -> None:
         "--passphrase",
         action="store_true",
         help="Generate passphrase instead of password",
+    )
+    arg_parser.add_argument(
+        "--username",
+        action="store_true",
+        help="Generate username instead of password",
     )
     arg_parser.add_argument(
         "-C", "--nocolor", action="store_true", help="print passwords in no color"
@@ -137,6 +153,12 @@ def main() -> None:
         for _ in range(count):
             print(
                 genpwd_passphrase(args.words, args.nocolor),
+                end=("\n" if IS_ATTY else ""),
+            )
+    elif args.username:
+        for _ in range(count):
+            print(
+                genpwd_username(args.nocolor),
                 end=("\n" if IS_ATTY else ""),
             )
     else:
