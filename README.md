@@ -38,6 +38,6 @@ options:
   -w WORDS, --words WORDS
                         Number of words for passphrase (from 4 to 128)
   -n COUNT, --count COUNT
-                        numbers of passwords to generate (from 1 to 20)
+                        numbers of passwords to generate (from 1 to 1000)
   -v, --version         print version number and exit
 ```
