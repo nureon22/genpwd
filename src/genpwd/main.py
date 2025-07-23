@@ -161,25 +161,27 @@ def main() -> None:
         return print(VERSION)
 
     count = min(max(1, args.count), 20)
+    results: list[str] = []
 
     if args.passphrase:
         for _ in range(count):
-            print(
+            results.append(
                 genpwd_passphrase(args.words, args.capitalize, args.nocolor),
-                end=("\n" if IS_ATTY else ""),
             )
     elif args.username:
         for _ in range(count):
-            print(
+            results.append(
                 genpwd_username(args.capitalize, args.nocolor),
-                end=("\n" if IS_ATTY else ""),
             )
     else:
         for _ in range(count):
-            print(
+            results.append(
                 genpwd(args.length, not args.nodigits, not args.nosymbols, args.extended, args.nocolor),
-                end=("\n" if IS_ATTY else ""),
             )
+
+    print(
+        "\n".join(results) + ("\n" if IS_ATTY else "")
+    )
 
 
 if __name__ == "__main__":
