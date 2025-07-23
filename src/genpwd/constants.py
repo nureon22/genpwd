@@ -10,6 +10,8 @@ DEFAULT_WORDS = 8
 MIN_WORDS = 4
 MAX_WORDS = 128
 
+MAX_GENERATION = 1000
+
 CHARACTERS = {
     "lower": "abcdefghijklmnopqrstuvwxyz",
     "upper": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",

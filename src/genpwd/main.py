@@ -12,6 +12,7 @@ from .constants import (
     DEFAULT_WORDS,
     MIN_WORDS,
     MAX_WORDS,
+    MAX_GENERATION
 )
 from .words import EFF_LONG_WORDS
 
@@ -150,7 +151,7 @@ def main() -> None:
         action="store",
         type=int,
         default=1,
-        help="numbers of passwords to generate (from 1 to 20)",
+        help="numbers of passwords to generate (from 1 to {})".format(MAX_GENERATION),
     )
     arg_parser.add_argument(
         "-v", "--version", action="store_true", help="print version number and exit"
@@ -160,7 +161,7 @@ def main() -> None:
     if args.version:
         return print(VERSION)
 
-    count = min(max(1, args.count), 20)
+    count = min(max(1, args.count), MAX_GENERATION)
     results: list[str] = []
 
     if args.passphrase:
