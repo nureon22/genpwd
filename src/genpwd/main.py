@@ -181,7 +181,7 @@ def main() -> None:
             )
 
     print(
-        "\n".join(results) + ("\n" if IS_ATTY else "")
+        "\n".join(results), end=("\n" if IS_ATTY else "")
     )
 
 
