@@ -19,7 +19,7 @@ from .words import EFF_LONG_WORDS
 
 def apply_color(chars: str) -> str:
     return "".join(
-        "\033[{}m{}\033[00m".format(COLORS_MAP.get(char, "00"), char) for char in chars
+        f"\033[{COLORS_MAP.get(char, '00')}m{char}\033[00m" for char in chars
     )
 
 
@@ -133,7 +133,7 @@ def main() -> None:
         action="store",
         type=int,
         default=DEFAULT_LENGTH,
-        help="password length (from {} to {})".format(MIN_LENGTH, MAX_LENGTH),
+        help=f"password length (from {MIN_LENGTH} to {MAX_LENGTH})"
     )
     arg_parser.add_argument(
         "-w",
@@ -141,9 +141,7 @@ def main() -> None:
         action="store",
         type=int,
         default=DEFAULT_WORDS,
-        help="Number of words for passphrase (from {} to {})".format(
-            MIN_WORDS, MAX_WORDS
-        ),
+        help=f"Number of words for passphrase (from {MIN_WORDS} to {MAX_WORDS})"
     )
     arg_parser.add_argument(
         "-n",
@@ -151,7 +149,7 @@ def main() -> None:
         action="store",
         type=int,
         default=1,
-        help="numbers of passwords to generate (from 1 to {})".format(MAX_GENERATION),
+        help=f"numbers of passwords to generate (from 1 to {MAX_GENERATION})"
     )
     arg_parser.add_argument(
         "-v", "--version", action="store_true", help="print version number and exit"
