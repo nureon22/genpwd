@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "genpwd"
 description = "Generate secure password, passphrase and username"
-version = "1.11.0"
+version = "1.11.1"
 readme = "README.md"
 requires-python = ">= 3.9"
 license = { file = "LICENSE" }
