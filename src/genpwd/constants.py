@@ -35,12 +35,8 @@ CHARACTERS = {
     ),
 }
 
-COLORS_MAP = {}
+COLORS_MAP: dict[str, str] = {}
 
-for char in CHARACTERS["lower"]:
-    COLORS_MAP[char] = "92"
-for char in CHARACTERS["upper"]:
-    COLORS_MAP[char] = "93"
 for char in CHARACTERS["digit"]:
     COLORS_MAP[char] = "94"
 for char in CHARACTERS["symbol"]:
