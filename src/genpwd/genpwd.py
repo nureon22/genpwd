@@ -19,13 +19,16 @@ def apply_color(chars: str) -> str:
 
 def genpwd_password(
     length: int = DEFAULT_LENGTH,
-    digits: bool = False,
-    symbols: bool = False,
+    upper: bool = True,
+    digits: bool = True,
+    symbols: bool = True,
     extended: bool = False,
     nocolor: bool = False,
 ) -> str:
-    groups = ["lower", "upper"]
+    groups = ["lower"]
 
+    if upper:
+        groups.append("upper")
     if digits:
         groups.append("digit")
     if symbols:

@@ -36,6 +36,12 @@ def main() -> None:
         "-c", "--capitalize", action="store_true", help="Capitalize passphrase and username"
     )
     arg_parser.add_argument(
+        "-U",
+        "--noupper",
+        action="store_true",
+        help="exclude uppercase characters",
+    )
+    arg_parser.add_argument(
         "-D",
         "--nodigits",
         action="store_true",
@@ -102,7 +108,7 @@ def main() -> None:
         for _ in range(count):
             results.append(
                 genpwd_password(
-                    args.length, not args.nodigits, not args.nosymbols, args.extended, args.nocolor
+                    args.length, not args.noupper, not args.nodigits, not args.nosymbols, args.extended, args.nocolor
                 ),
             )
 
